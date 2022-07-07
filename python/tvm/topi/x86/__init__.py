@@ -44,3 +44,7 @@ from .scatter import *
 from .group_conv2d import *
 from .math_alter_op import *
 from .concat import *
+from .amm_conv2d import *
+from .amm_conv2d_int8 import *
+from .amm_linear import *
+from .amm_linear_int8 import *

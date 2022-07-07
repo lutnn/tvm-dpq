@@ -225,6 +225,21 @@ reg.register_pattern("nn.conv1d", OpPattern.OUT_ELEMWISE_FUSABLE)
 reg.register_strategy("nn.conv2d", strategy.conv2d_strategy)
 reg.register_pattern("nn.conv2d", OpPattern.OUT_ELEMWISE_FUSABLE)
 
+# amm conv2d
+reg.register_strategy("nn.amm_conv2d", strategy.amm_conv2d_strategy)
+reg.register_pattern("nn.amm_conv2d", OpPattern.OUT_ELEMWISE_FUSABLE)
+
+# amm conv2d int8
+reg.register_strategy("nn.amm_conv2d_int8", strategy.amm_conv2d_strategy)
+reg.register_pattern("nn.amm_conv2d_int8", OpPattern.OUT_ELEMWISE_FUSABLE)
+
+# amm linear
+reg.register_strategy("nn.amm_linear", strategy.amm_linear_strategy)
+reg.register_pattern("nn.amm_linear", OpPattern.OUT_ELEMWISE_FUSABLE)
+
+# amm linear int8
+reg.register_strategy("nn.amm_linear_int8", strategy.amm_linear_strategy)
+reg.register_pattern("nn.amm_linear_int8", OpPattern.OUT_ELEMWISE_FUSABLE)
 
 @reg.register_alter_op_layout("nn.conv2d")
 def alter_op_layout_conv2d(attrs, inputs, tinfos, out_type):

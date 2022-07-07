@@ -269,6 +269,76 @@ def conv2d_strategy_arm_cpu(attrs, inputs, out_type, target):
     return strategy
 
 
+@amm_conv2d_strategy.register("arm_cpu")
+def amm_conv2d_strategy_arm_cpu(attrs, inputs, out_type, target):
+    """conv2d arm cpu strategy"""
+    strategy = _op.OpStrategy()
+    data, bias, centroids, lut, scale = inputs
+
+    layout = attrs.data_layout
+    kernel_layout = attrs.kernel_layout
+
+    if layout == "NCHW":
+        assert kernel_layout == "OIHW"
+        strategy.add_implementation(
+            wrap_compute_amm_conv2d(topi.arm_cpu.compute_amm_conv2d),
+            wrap_topi_schedule(topi.arm_cpu.schedule_amm_conv2d), 
+            name="amm_conv2d_nchw.arm_cpu",
+        )
+    else:
+        raise RuntimeError("Unsupported operator layout")
+
+    return strategy
+
+@amm_linear_strategy.register("arm_cpu")
+def amm_linear_strategy_arm_cpu(attrs, inputs, out_type, target):
+    """amm linear arm cpu strategy"""
+    strategy = _op.OpStrategy()
+    data, bias, centroids, lut, scale = inputs
+
+    strategy.add_implementation(
+        wrap_compute_linear_conv2d(topi.arm_cpu.compute_amm_linear),
+        wrap_topi_schedule(topi.arm_cpu.schedule_amm_linear), 
+        name="amm_linear.arm_cpu",
+    )
+
+    return strategy
+
+@amm_conv2d_int8_strategy.register("arm_cpu")
+def amm_conv2d_int8_strategy_arm_cpu(attrs, inputs, out_type, target):
+    """conv2d arm cpu strategy"""
+    strategy = _op.OpStrategy()
+    data, bias, centroids, lut, scale = inputs
+
+    layout = attrs.data_layout
+    kernel_layout = attrs.kernel_layout
+
+    if layout == "NCHW":
+        assert kernel_layout == "OIHW"
+        strategy.add_implementation(
+            wrap_compute_amm_conv2d(topi.arm_cpu.compute_amm_conv2d),
+            wrap_topi_schedule(topi.arm_cpu.schedule_amm_conv2d), 
+            name="amm_conv2d_int8_nchw.arm_cpu",
+        )
+    else:
+        raise RuntimeError("Unsupported operator layout")
+
+    return strategy
+
+@amm_linear_int8_strategy.register("arm_cpu")
+def amm_linear_int8_strategy_arm_cpu(attrs, inputs, out_type, target):
+    """amm linear arm cpu strategy"""
+    strategy = _op.OpStrategy()
+    data, bias, centroids, lut, scale = inputs
+
+    strategy.add_implementation(
+        wrap_compute_linear_conv2d(topi.arm_cpu.compute_amm_linear),
+        wrap_topi_schedule(topi.arm_cpu.schedule_amm_linear), 
+        name="amm_linear_int8.arm_cpu",
+    )
+
+    return strategy
+
 @conv2d_NCHWc_strategy.register("arm_cpu")
 def conv2d_NCHWc_strategy_arm_cpu(attrs, inputs, out_type, target):
     """conv2d_NCHWc adopted from x86"""

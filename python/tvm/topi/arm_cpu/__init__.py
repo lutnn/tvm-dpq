@@ -29,3 +29,7 @@ from .injective import *
 from .group_conv2d import *
 from .pooling import *
 from .dense import *
+from .amm_conv2d import *
+from .amm_conv2d_int8 import *
+from .amm_linear import *
+from .amm_linear_int8 import *

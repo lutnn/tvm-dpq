@@ -256,6 +256,49 @@ def wrap_compute_conv2d(
 
     return _compute_conv2d
 
+# amm conv2d
+def wrap_compute_amm_conv2d(
+    topi_compute
+):
+    """Wrap amm conv2d topi compute"""
+
+    def _compute_amm_conv2d(attrs, inputs, out_type):
+        data, bias, centroids, lut, scale = inputs
+         
+        output_shape = get_const_tuple(attrs.output_shape)
+        kernel_size = get_const_tuple(attrs.kernel_size)
+        strides = get_const_tuple(attrs.strides)
+        padding = get_const_tuple(attrs.padding)
+        subvec_len = get_const_tuple(attrs.subvec_len)
+        data_layout = attrs.data_layout
+        kernel_layout = attrs.kernel_layout
+        out_layout = attrs.out_layout
+        out_dtype = attrs.out_dtype
+
+        args = [data, bias, centroids, lut, scale, subvec_len, 
+                output_shape, kernel_size, strides, padding, 
+                data_layout, kernel_layout, out_layout, out_dtype]
+
+        return [topi_compute(*args)]
+
+    return _compute_amm_conv2d
+
+# amm conv2d
+def wrap_compute_linear_conv2d(
+    topi_compute
+):
+    """Wrap amm linear topi compute"""
+    def _compute_amm_linear(attrs, inputs, out_type):
+        data, bias, centroids, lut, scale = inputs
+         
+        subvec_len = get_const_tuple(attrs.subvec_len)
+        out_dtype = attrs.out_dtype
+
+        args = [data, bias, centroids, lut, scale, subvec_len, out_dtype]
+
+        return [topi_compute(*args)]
+
+    return _compute_amm_linear 
 
 @override_native_generic_func("conv2d_strategy")
 def conv2d_strategy(attrs, inputs, out_type, target):
@@ -352,6 +395,34 @@ def conv2d_NCHWc_strategy(attrs, inputs, out_type, target):
         )
     return strategy
 
+
+@override_native_generic_func("amm_conv2d_strategy")
+def amm_conv2d_strategy(attrs, inputs, out_type, target):
+    """conv2d generic strategy"""
+    logger.warning("amm conv2d is not optimized for this platform.")
+    strategy = _op.OpStrategy()
+    return strategy
+
+@override_native_generic_func("amm_linear_strategy")
+def amm_linear_strategy(attrs, inputs, out_type, target):
+    """amm lienar generic strategy"""
+    logger.warning("amm linear is not optimized for this platform.")
+    strategy = _op.OpStrategy()
+    return strategy
+
+@override_native_generic_func("amm_conv2d_int8_strategy")
+def amm_conv2d_int8_strategy(attrs, inputs, out_type, target):
+    """conv2d generic strategy"""
+    logger.warning("amm conv2d int8 is not optimized for this platform.")
+    strategy = _op.OpStrategy()
+    return strategy
+
+@override_native_generic_func("amm_linear_int8_strategy")
+def amm_linear_int8_strategy(attrs, inputs, out_type, target):
+    """amm lienar generic strategy"""
+    logger.warning("amm linear int8 is not optimized for this platform.")
+    strategy = _op.OpStrategy()
+    return strategy
 
 # depthwise_conv2d_NCHWc
 @override_native_generic_func("depthwise_conv2d_NCHWc_strategy")

@@ -3821,3 +3821,128 @@ def conv2d_backward_weight(
         kernel_layout,
         out_dtype,
     )
+
+def amm_conv2d(
+    data,
+    bias,
+    centroids,
+    lut,
+    scale,
+    subvec_len,
+    output_shape,
+    kernel_size=None,
+    strides=(1, 1),
+    padding=(0, 0),
+    data_layout="NCHW",
+    kernel_layout="OIHW",
+    out_layout="",
+    out_dtype="",
+): 
+    if isinstance(kernel_size, int):
+        kernel_size = (kernel_size, kernel_size)
+    if isinstance(strides, int):
+        strides = (strides, strides)
+    
+    # TODO enforce 4-way padding in topi/nn/conv2d after #4644 merged
+    # convert 2-way padding to 4-way padding
+    padding = get_pad_tuple2d(padding)
+    return _make.amm_conv2d(
+        data,
+        bias,
+        centroids,
+        lut,
+        scale,
+        subvec_len,
+        output_shape,
+        kernel_size,
+        strides,
+        padding,
+        data_layout,
+        kernel_layout,
+        out_layout,
+        out_dtype
+    )
+
+def amm_linear(
+    data,
+    bias,
+    centroids,
+    lut,
+    scale,
+    subvec_len,
+    output_shape,
+    out_dtype
+): 
+    return _make.amm_linear(
+        data,
+        bias,
+        centroids,
+        lut,
+        scale,
+        subvec_len,
+        output_shape,
+        out_dtype
+    )
+
+
+def amm_conv2d_int8(
+    data,
+    bias,
+    centroids,
+    lut,
+    scale,
+    subvec_len,
+    output_shape,
+    kernel_size=None,
+    strides=(1, 1),
+    padding=(0, 0),
+    data_layout="NCHW",
+    kernel_layout="OIHW",
+    out_layout="",
+    out_dtype="",
+): 
+    if isinstance(kernel_size, int):
+        kernel_size = (kernel_size, kernel_size)
+    if isinstance(strides, int):
+        strides = (strides, strides)
+    
+    # TODO enforce 4-way padding in topi/nn/conv2d after #4644 merged
+    # convert 2-way padding to 4-way padding
+    padding = get_pad_tuple2d(padding)
+    return _make.amm_conv2d_int8(
+        data,
+        bias,
+        centroids,
+        lut,
+        scale,
+        subvec_len,
+        output_shape,
+        kernel_size,
+        strides,
+        padding,
+        data_layout,
+        kernel_layout,
+        out_layout,
+        out_dtype
+    )
+
+def amm_linear_int8(
+    data,
+    bias,
+    centroids,
+    lut,
+    scale,
+    subvec_len,
+    output_shape,
+    out_dtype
+): 
+    return _make.amm_linear_int8(
+        data,
+        bias,
+        centroids,
+        lut,
+        scale,
+        subvec_len,
+        output_shape,
+        out_dtype
+    )
